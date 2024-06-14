@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link
+    rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav style="background-color: red;"></nav>
+  <div class="typewriter">
+    <h1 >Daily Hadith</h1>
+  </div>
+ 
+
+  <div class="main">
+    <h5 id="bookSlug"></h5>
+    <p id="englishHadith">
+
+    </p>
+
+    <p  id="urduHadith"></p>
+    
+  </div>
+  <p id="aboutme">Developed by <a href="https://Ayan77-10.github.io">Ayan Feroz Ansari</a></p>
+  <!-- <button id="clickButton" onclick="getHadith()">
+    <span class="transition"></span>
+    <span class="gradient"></span>
+    <span class="label">Hadith</span>
+  </button> -->
+  
+</body>
+<script>
+   const random = Math.floor(Math.random() * 200)
+
+ 
+    function changeHadith(){
+
+      const apiUrl = 'https://www.hadithapi.com/api/hadiths?apiKey=$2y$10$xGuxkm2GFsUzNRuW07AmZuR8BMVqNcYyGR0BIGqWP82AWQsmOWEm&paginate=365';
+
+  fetch(apiUrl)
+    .then(response => response.json())
+    .then(data => {
+    const info = data.hadiths.data
+    console.log(info)
+    const hadiths = data.hadiths.data[random].hadithEnglish; 
+    const writerName = data.hadiths.data[random].book.writerName
+    const status = data.hadiths.data[random].status
+    const hadithUrdu = data.hadiths.data[random].hadithUrdu
+    const bookSlug = data.hadiths.data[random].bookSlug
+    console.log(hadiths); 
+    document.getElementById("englishHadith").innerHTML = hadiths + '  -  ' + status +" " + "( " + writerName + " )"
+    document.getElementById("urduHadith").innerHTML = hadithUrdu
+    document.getElementById("bookSlug").innerHTML = bookSlug
+    localStorage.setItem("lastTextChange", Date.now());
+    })
+    .catch(error => {
+    console.log(error);
+    });
+
+
+  }
+
+
+  changeHadith()
+  function checkElapsedTime() {
+    console.log("i am in elapsefd ")
+    const lastTextChange = localStorage.getItem("lastTextChange");
+    if (lastTextChange) {
+        const elapsedTime = Date.now() - parseInt(lastTextChange);
+        // If 24 hours (86400000 milliseconds) have passed, change the text
+        if (elapsedTime >= 24 * 60 * 60 * 1000) {
+            console.log("changed hadith if else statement")
+            changeHadith();
+        }
+    } else {
+        // If there's no record of the last change, change the text
+        changeHadith();
+    }
+}
+// Call the checkElapsedTime function on page load
+checkElapsedTime();
+
+// Set a timer to check elapsed time every minute (to handle cases where the user leaves the page open for longer than 24 hours)
+setInterval(checkElapsedTime, 60000); // 1 minute in milliseconds
+
+
+
+
+</script>
+</html>
+
+
+
